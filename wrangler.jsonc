@@ -1,0 +1,97 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "onestorage",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "limits": {
+    "subrequests": 250000
+  },
+  "worker_loaders": [
+    {
+      "binding": "LOADER"
+    }
+  ],
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "html_handling": "none",
+    "not_found_handling": "none",
+    "run_worker_first": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "onestorage",
+      "database_id": "b1cebc4f-191f-4459-904d-b244afec66d6",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "OBJECTS",
+      "bucket_name": "onestorage-objects","preview_bucket_name": "onestorage-objects"
+    },
+    {
+      "binding": "NPM_CACHE",
+      "bucket_name": "onestorage-npm-cache","preview_bucket_name": "onestorage-npm-cache"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "REPOSITORIES",
+        "class_name": "Repository"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "Repository"
+      ]
+    }
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "queues": {
+    "producers": [
+      {
+        "binding": "EVENTS",
+        "queue": "onestorage-events"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "onestorage-events",
+        "max_batch_size": 5,
+        "max_batch_timeout": 1,
+        "max_retries": 5
+      }
+    ]
+  },
+  "triggers": {
+    "crons": [
+      "*/5 * * * *"
+    ]
+  },
+  "workers_dev": true,
+  "ai": {
+    "binding": "AI"
+  },
+  "vectorize": [
+    {
+      "binding": "CODE_VECTORS",
+      "index_name": "onestorage-code"
+    }
+  ],
+  "secrets": {
+    "required": [
+      "CREDENTIAL_ENCRYPTION_KEY"
+    ]
+  }
+}
